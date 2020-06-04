@@ -8,65 +8,20 @@
   </head>
   <body>
 
-    <div class="container">
-      <h1>Campo Minato</h1>
+    <!-- Risultato -->
+    <p id="risultato"></p>
 
-      <!-- MAIN -->
-      <main>
+    <!-- Punteggio -->
+    <p id="punteggio"></p>
 
-        <!-- INPUT -->
-        <section class="input">
+    <!-- Tentativi rimasti -->
+    <p id="rimasti"></p>
 
-          <!-- Seleziona difficoltà -->
-          <div class="seleziona-difficolta">
-            <label class="label-difficolta">Seleziona il livello di difficoltà</label>
-            <button id="facile" type="button" name="facile" value="Facile">Facile</button>
-            <button id="medio" type="button" name="medio" value="Medio">Medio</button>
-            <button id="difficile" type="button" name="difficile" value="Difficile">Difficile</button>
-          </div>
-          <!-- Fine Seleziona difficoltà -->
+    <!-- Numeri inseriti -->
+    <p id="inseriti"></p>
 
-          <!-- Difficoltà selezionata -->
-          <div class="difficolta-selezionata">
-            <label>Difficoltà selezionata:</label>
-            <input id="difficolta-selezionata" type="text" value="">
-          </div>
-          <!-- Fine Difficoltà selezionata -->
-
-          <!-- Gioca -->
-          <div class="gioca">
-            <button id="gioca" type="button" name="gioca">GIOCA</button>
-            <button id="ricomincia" type="button" name="ricomincia">RICOMINCIA</button>
-          </div>
-          <!-- Fine Gioca -->
-        </section>
-        <!-- FINE INPUT -->
-
-        <!-- OUTPUT -->
-        <section class="output">
-
-          <!-- Inserisci numero -->
-          <div id="inserisci-numero" class="inserisci-numero hidden">
-            <label class="label-numero">Inserisci numero</label>
-            <input id="numero" type="number" placeholder="Inserisci un numero">
-            <button id="ok" type="button" name="inserisci">OK</button>
-          </div>
-          <!-- Fine Inserisci numero -->
-        </section>
-        <!-- FINE OUTPUT -->
-
-
-      </main>
-      <!-- FINE MAIN -->
-
-      <!-- Errore -->
-      <div class="errore">
-        <p id="errore"></p>
-      </div>
-      <!-- Fine Errore -->
-
-    </div>
-
+    <!-- Bombe -->
+    <p id="bombe"></p>
 
     <!-- link javascript -->
     <script type="text/javascript" src="js/function.js">

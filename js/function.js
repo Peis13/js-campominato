@@ -36,7 +36,6 @@ function fraziona(stringa) {
   for (var i = 0; i < stringa.length; i++) {
     arrayStringa.push(stringa[i]);
   }
-
   return arrayStringa;
 }
 
@@ -52,7 +51,6 @@ function rovesciaArray(stringa) {
   for (var i = (stringaArray.length - 1); i >= 0; i--) {
     stringaReverseArray.push(stringaArray[i]);
   }
-
   return stringaReverseArray.join('');
 }
 // ----- FINE STRINGA ----- //
@@ -76,6 +74,39 @@ function isEven(numero) {
   return boolean;
 }
 // ----- FINE NUMERO ----- //
+
+// ----- ARRAY ----- //
+// Genero N array con numeri casuali da 1 a 100
+function nArray(num) {
+  var num;
+  var array = [];
+  var listaArray = [];
+
+  for (var i = 0; i < num; i++) {
+    array = randomIntArrayLength(10, 1, 100);
+    listaArray.push('<br>' + array);
+  }
+  return listaArray;
+}
+
+// Genero un array di lunghezza variabile
+// contenente un range di numeri random NON RIPETUTI
+function randomIntArrayLength(arrayLength, min, max) {
+  var i = 0;
+  var array = [];
+
+  while (i < arrayLength) {
+
+    var n = randomInt(min, max);
+    if (!(array.includes(n))) {
+
+      array.push(n);
+      i++;
+    }
+  }
+  return array;
+}
+// ----- FINE ARRAY ----- //
 
 //          ANIMAZIONI           //
 // ANIMAZIONE MENU ICON

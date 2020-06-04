@@ -1,172 +1,146 @@
+// All’inizio il software richiede anche una difficoltà all’utente che cambia il range di numeri casuali.
+// Con difficoltà 0=> tra 1 e 100, con difficoltà 1 => tra 1 e 80, con difficoltà 2=> tra 1 e 50
 // Il computer deve generare 16 numeri casuali tra 1 e 100.
-// In seguito deve chiedere all’utente di inserire un numero alla
-// volta, sempre compreso tra 1 e 100.
-// Se il numero è presente nella lista dei numeri generati, la partita
-// termina, altrimenti si continua chiedendo all’utente un altro
-// numero.
-// La partita termina quando il giocatore inserisce un numero
-// “vietato” o raggiunge il numero massimo possibile di numeri
-// consentiti.
+// In seguito deve chiedere all’utente di inserire un numero alla volta, sempre compreso tra 1 e 100.
+// Se il numero è presente nella lista dei numeri generati, la partita termina,
+// altrimenti si continua chiedendo all’utente un altro numero.
+// La partita termina quando il giocatore inserisce un numero “vietato”
+// o raggiunge il numero massimo possibile di numeri consentiti.
 // Al termine della partita il software deve comunicare il punteggio,
-// cioè il numero di volte che l’utente ha inserito un numero
-// consentito.
-// BONUS: all’inizio il software richiede anche una difficoltà
-// all’utente che cambia il range di numeri casuali.
-// Con difficoltà 0=> tra 1 e 100, con difficoltà 1 => tra 1 e 80, con
-// difficoltà 2=> tra 1 e 50
+// cioè il numero di volte che l’utente ha inserito un numero consentito.
 
-// BOTTONI
-var facile = document.getElementById('facile');
-var medio = document.getElementById('medio');
-var difficile = document.getElementById('difficile');
-var gioca = document.getElementById('gioca');
-var ricomincia = document.getElementById('ricomincia');
-var ok = document.getElementById('ok');
-
-// Chiedo all'utente che difficoltà vuole applicare al gioco
-var difficoltaSelezionata = document.getElementById('difficolta-selezionata');
-// Facile
-facile.addEventListener('click',
-  function() {
-    difficoltaSelezionata.value = facile.value;
-  }
-)
-
-// Medio
-medio.addEventListener('click',
-  function() {
-    difficoltaSelezionata.value = medio.value;
-  }
-)
-
-// Difficile
-difficile.addEventListener('click',
-  function() {
-    difficoltaSelezionata.value = difficile.value;
-  }
-)
+// INPUT
+// Chiedo all'utente di scegliere il livello di difficoltà
+var difficolta = parseInt(prompt('Scegli il livello di difficoltà da 0 a 2'));
+var rangeMax = 100;
+var numerInseriti = [];
 
 // OUTPUT
-var errore = document.getElementById('errore');
-var inserisciNumero = document.getElementById('inserisci-numero');
-var quantitaBombe = 16;
+var messaggioRisultato = 'COMPLIMENTI HAI VINTO';
+var stampaRisultato = document.getElementById('risultato');
+var stampaPunteggio = document.getElementById('punteggio');
+var stampaTentativiRimasti = document.getElementById('rimasti');
+var stampaNumerInseriti = document.getElementById('inseriti');
+var stampaBombe = document.getElementById('bombe');
 
-// GIOCA
-gioca.addEventListener('click',
-  function() {
+// Se non ha inserito un valore accettabile,
+// chiedo all'utente un numero finchè non inserisce un valore corretto
+var i = 0;
+while ((isNaN(difficolta)) || (difficolta < 0) || (difficolta > 2)) {
 
-    var bombe = [];
-    var numerInseriti = [];
-    var rangeMin = 1;
-    var rangeMax = '';
-    var tentativiTotali = 0;
-    var messaggio = '';
-    errore.innerHTML = messaggio;
-    inserisciNumero.classList.add('hidden');
-    inserisciNumero.classList.remove('visible');
+  difficolta = parseInt(prompt('Ti ho detto da 0 a 2!'));
+  i++;
+}
 
-    // Chiedo all'utente quale difficoltà scegliere
-    // in base alla scelta, imposto il limite massimo per generare numeri casuali
-    switch (difficoltaSelezionata.value) {
-      case 'Facile':
-        rangeMax = 100;
-        break;
-      case 'Medio':
-        rangeMax = 80;
-        break;
-      case 'Difficile':
-        rangeMax = 50;
-        break;
-      default:
-        messaggio = 'Seleziona un livello di difficoltà!';
-    }
+// A questo punto l'utente ha inserito un valore corretto
+// quindi imposto il range massimo di numeri casuali per generare l'array di bombe
+switch (difficolta) {
+  case 1:
+    rangeMax = 80;
+    break;
+  case 2:
+    rangeMax = 50;
+    break;
+}
+// console.log('Range massimo: ' + rangeMax);
 
-    // Controllo che l'utente abbia selezionato il livello di difficoltà
-    if (isNaN(rangeMax)) {
-      errore.innerHTML = messaggio;
+// genero l'array di 16 bombe con numeri casuali da 1 a rangeMax
+var bombe = generaBombe(16, 1, rangeMax);
+// console.log('Array bombe: ' + bombe);
+
+// imposto il limite di numeri che l'utente può inserire per poter vincere
+var tentativiVittoria = rangeMax - bombe.length;
+// console.log('tentativi vittoria: ' + tentativiVittoria);
+
+// Creo una valiabile booleana
+// per poter uscire dal ciclo while quando l'utente perde
+var vittoria = true;
+
+// chiedo all’utente di inserire un numero alla volta, sempre compreso tra 1 e 100
+// tante volte quante sono le possibilità per poter vincere
+// Se il numero inserito è presente nell'array di bombe, l'utente ha perso
+// altrimenti ogni numero inserito lo salvo dentro un array
+var totaleNumerInseriti = 0;  // questa variabile la utilizzo come contatore
+// console.log('Totale numeri inseriti: ' + totaleNumerInseriti);
+while ((vittoria == true) && (totaleNumerInseriti < tentativiVittoria)) { //// NOTE: : sostituisci tentativiVittoria con un numero per fare debug
+
+  var numero = parseInt(prompt('Inserisci un numero da 1 a ' + rangeMax + '. Fin\'ora hai inserito: ' + numerInseriti));
+  // console.log('Hai appena inserito: ' + numero);
+
+  // Validazione:
+  // se il numero inserito non è un numero
+  // oppure se il numero non è compreso tra 1 e rangeMax
+  // chiedo di nuovo l'inserimento del numero
+  // fino all'inserimento di un numero valido
+  while ((isNaN(numero)) || (numero < 1) || (numero > rangeMax)) {
+
+    alert('Sono consentiti solo numeri da 1 a ' + rangeMax);
+    numero = parseInt(prompt('Inserisci un numero da 1 a ' + rangeMax));
+  }
+
+  // Validazione:
+  // se il numero inserito è già stato inserito precedentemente
+  // ricomincia il ciclo senza incrementare il contatore del ciclo
+  // altrimenti prosegui il ciclo
+  if (numerInseriti.includes(numero)) {
+
+    alert(numero + ' è già stato inserito precedentemente, prova con un altro numero');
+  } else {
+
+    // Validazione:
+    // se il numero inserito è incluso nell'array delle bombe HAI PERSO!
+    // altrimenti aggiungi il numero nell'array numerInseriti
+    if (bombe.includes(numero)) {
+
+      vittoria = false;
+      messaggioRisultato = 'BOOOOOM HAI PERSO!';
     } else {
 
-      // Il computer genera un array di 16 numeri casuali tra 1 e rangeMax.
-      bombe = randomIntArrayLength(quantitaBombe, rangeMin, rangeMax);
-
-      // Visualizza l'output
-      inserisciNumero.classList.add('visible');
-      inserisciNumero.classList.remove('hidden');
+      numerInseriti.push(numero);
+      // console.log('Lista numeri inseriti: ' + numerInseriti);
+      tentativiVittoria -= 1;
+      // console.log('Tentativi rimasti: ' + tentativiVittoria);
     }
-    console.log(bombe);
 
-    // OK
-    ok.addEventListener('click',
-    function() {
-
-      var numero = document.getElementById('numero');
-      var numeroInserito = parseInt(numero.value);
-      var messaggio = '';
-      errore.innerHTML = messaggio;
-      tentativiTotali = (rangeMax - bombe.length);
-
-      // Chiedo se il numero inserito è un numero valido
-      // oppure se è compreso tra 1 e rangeMax
-      if (isNaN(numeroInserito) || (numeroInserito > rangeMax) || (numeroInserito < 0)) {
-        messaggio = 'Inserisci un numero tra 1 e ' + rangeMax;
-        errore.innerHTML = messaggio;
-
-        // Altrimenti se l'array bombe include il numeroInserito
-      } else if (bombe.includes(numeroInserito)) {
-        messaggio = 'HAI PERSO!' + '<br>Il numero ' + numeroInserito + ' era una mina' + '<br>Ritenta';
-        errore.innerHTML = messaggio;
-        difficoltaSelezionata.value = '';
-
-        // Altrimenti se il numeroInserito è già stato già provato in precedenza
-      } else if (numerInseriti.includes(numeroInserito)) {
-        messaggio = 'Questo numero (' + numeroInserito + ') è già stato inserito' + '<br>Prova con un altro numero';
-        errore.innerHTML = messaggio;
-
-        // Altrimenti se i numerInseriti sono inferiori dei tentativi totali
-      } else if (numerInseriti.length < tentativiTotali) {
-        numerInseriti.push(numeroInserito);
-        console.log('array numerInseriti: ' + numerInseriti);
-
-        // Altrimenti se la quantità di numeri inseriti è uguale ai tentativiTotali
-      } else if (numerInseriti.length == tentativiTotali) {
-        messaggio = 'COMPLIMENTI HAI VINTO!!!'
-        errore.innerHTML = messaggio;
-      }
-      numero.value = '';
-    }
-  )
   }
-)
-
-
-// RICOMINCIA
-ricomincia.addEventListener('click',
-function() {
-
-  bombe = [];
-  numerInseriti = [];
-  numero.value = '';
-  inserisciNumero.classList.add('hidden');
-  inserisciNumero.classList.remove('visible');
-  difficoltaSelezionata.value = '';
-  var messaggio = '';
-  errore.innerHTML = messaggio;
+  totaleNumerInseriti = numerInseriti.length; //questo è l'incremento del ciclo while
+  // console.log('Totale numeri inseriti: ' + totaleNumerInseriti);
 }
-)
 
-// Genero un array di lunghezza variabile
-// contenente un range di numeri random
-function randomIntArrayLength(arrayLength, min, max) {
+// Inizializzo i messaggi per ogni dettaglio partita
+var messaggioTentativiRimasti = 'Ti mancavano ' + tentativiVittoria + ' tentativi';
+var messaggioPunteggio = 'Punteggio: ' + totaleNumerInseriti;
+var messaggioNumerInseriti = 'La tua rovina: ' + numero;
+var messaggioBombe = 'Queste sono le bombe che dovevi evitare: ' + bombe;
 
+// Incaso di vittoria, ometti i messaggi dei tentativi rimasti e di numero-miccia
+if (vittoria) {
+
+  messaggioTentativiRimasti = '';
+  messaggioNumerInseriti = '';
+  messaggioBombe = 'Queste sono le bombe che hai evitato: ' + bombe;
+}
+
+// Stampa dei dettagli partita in base al risultato
+stampaRisultato.innerHTML = messaggioRisultato;
+stampaPunteggio.innerHTML = messaggioPunteggio;
+stampaTentativiRimasti.innerHTML = messaggioTentativiRimasti;
+stampaNumerInseriti.innerHTML = messaggioNumerInseriti;
+stampaBombe.innerHTML = messaggioBombe;
+// console.log(messaggioRisultato);
+
+//          FUNZIONI           //
+// Genero un array di lunghezza variabile (nBombe)
+// contenente un range di numeri random NON RIPETUTI (min, max)
+// return: array
+function generaBombe(nBombe, min, max) {
   var i = 0;
   var array = [];
 
-  while (i < arrayLength) {
-
+  while (i < nBombe) {
     var n = randomInt(min, max);
-    if (array.includes(n)) {
 
-    } else {
+    if (!(array.includes(n))) {
       array.push(n);
       i++;
     }
